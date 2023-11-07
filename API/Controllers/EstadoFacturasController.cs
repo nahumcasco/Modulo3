@@ -7,23 +7,23 @@ namespace API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class UsuarioController : ControllerBase
+	public class EstadoFacturasController : ControllerBase
 	{
 		private readonly DBConfiguracion dBConfiguracion;
-		private IUsuarioRepository _usuarioRepository;
+		private IEstadoFacturaRepository estadoFacturaRepository;
 
-		public UsuarioController(DBConfiguracion _dBConfiguracion)
+		public EstadoFacturasController(DBConfiguracion _dBConfiguracion)
 		{
 			dBConfiguracion = _dBConfiguracion;
-			_usuarioRepository = new UsuarioRepository(dBConfiguracion.CadenaConexion);
+			estadoFacturaRepository = new EstadoFacturaRepository(dBConfiguracion.CadenaConexion);
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> GetListaAsync()
 		{
-			IEnumerable<Usuario> lista = new List<Usuario>();
+			IEnumerable<EstadoFactura> lista = new List<EstadoFactura>();
 
-			lista = await _usuarioRepository.GetListaAsync();
+			lista = await estadoFacturaRepository.GetListaAsync();
 			if (lista.Count() == 0)
 				return NotFound();
 			return Ok(lista);
@@ -32,9 +32,9 @@ namespace API.Controllers
 		[HttpGet("{codigo}")]
 		public async Task<IActionResult> GetPorCodigoAsync(string codigo)
 		{
-			Usuario response = new Usuario();
+			EstadoFactura response = new EstadoFactura();
 
-			response = await _usuarioRepository.GetPorCodigoAsync(codigo);
+			response = await estadoFacturaRepository.GetPorCodigoAsync(codigo);
 
 			if (string.IsNullOrEmpty(response.Codigo))
 			{
@@ -44,11 +44,11 @@ namespace API.Controllers
 		}
 
 		[HttpPut]
-		public async Task<IActionResult> ActualizarAsync(Usuario usuario)
+		public async Task<IActionResult> ActualizarAsync(EstadoFactura estadoFactura)
 		{
 			bool response = false;
 
-			response = await _usuarioRepository.ActualizarAsync(usuario);
+			response = await estadoFacturaRepository.ActualizarAsync(estadoFactura);
 			if (response)
 				return Ok(response);
 			else
@@ -56,10 +56,10 @@ namespace API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> NuevoAsync(Usuario usuario)
+		public async Task<IActionResult> NuevaAsync(EstadoFactura estadoFactura)
 		{
 			bool response = false;
-			response = await _usuarioRepository.NuevoAsync(usuario);
+			response = await estadoFacturaRepository.NuevoAsync(estadoFactura);
 			if (response)
 				return Created("", response);
 			else
@@ -70,13 +70,12 @@ namespace API.Controllers
 		public async Task<IActionResult> Eliminar(string codigo)
 		{
 			bool response = false;
-			response = await _usuarioRepository.EliminarAsync(codigo);
+			response = await estadoFacturaRepository.EliminarAsync(codigo);
 			if (response)
 				return Ok(response);
 			else
 				return BadRequest();
 		}
-
 
 	}
 }
