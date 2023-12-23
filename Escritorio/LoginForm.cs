@@ -46,6 +46,12 @@ namespace Escritorio
 					string contect = await response.Content.ReadAsStringAsync();
 					loginMS = JsonConvert.DeserializeObject<LoginMS>(contect);
 
+					System.Security.Principal.GenericIdentity identidad = new System.Security.Principal.GenericIdentity(loginMS.Codigo);
+					System.Threading.Thread.SetData(System.Threading.Thread.GetNamedDataSlot("Nombre"), loginMS.Nombre);
+					System.Threading.Thread.SetData(System.Threading.Thread.GetNamedDataSlot("Token"), loginMS.Token);
+					System.Security.Principal.GenericPrincipal principal = new System.Security.Principal.GenericPrincipal(identidad, new string[] { loginMS.Rol });
+					System.Threading.Thread.CurrentPrincipal = principal;
+
 					Hide();
 
 					MenuForm menu = new MenuForm();
